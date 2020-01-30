@@ -35,7 +35,6 @@ GUI::GUI() noexcept
     ImGuiIO& io = ImGui::GetIO();
     io.IniFilename = nullptr;
     io.LogFilename = nullptr;
-    io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
 
     if (PWSTR pathToFonts; SUCCEEDED(SHGetKnownFolderPath(FOLDERID_Fonts, 0, nullptr, &pathToFonts))) {
         const std::filesystem::path path{ pathToFonts };
@@ -81,20 +80,24 @@ void GUI::updateColors() const noexcept
 
 void GUI::hotkey(int& key) noexcept
 {
-    key ? ImGui::Text("[ %s ]", interfaces.inputSystem->virtualKeyToString(key)) : ImGui::TextUnformatted("[ key ]");
+    constexpr bool stringDisplayTest = true;
 
-    if (!ImGui::IsItemHovered())
-        return;
+    if constexpr (stringDisplayTest)
+        key ? ImGui::Text("[ %s ]", interfaces.inputSystem->virtualKeyToString(key)) : ImGui::TextUnformatted("[ key ]");
+    else
+        key ? ImGui::Text("[ 0x%x ]", key) : ImGui::TextUnformatted("[ key ]");
 
-    ImGui::SetTooltip("Press any key to change keybind");
-    ImGuiIO& io = ImGui::GetIO();
-    for (int i = 0; i < IM_ARRAYSIZE(io.KeysDown); i++)
-        if (ImGui::IsKeyPressed(i) && i != config.misc.menuKey)
-            key = i != VK_ESCAPE ? i : 0;
+    if (ImGui::IsItemHovered()) {
+        ImGui::SetTooltip("Press any key to change keybind");
+        ImGuiIO& io = ImGui::GetIO();
+        for (int i = 0; i < IM_ARRAYSIZE(io.KeysDown); i++)
+            if (ImGui::IsKeyPressed(i) && i != config.misc.menuKey)
+                key = i != VK_ESCAPE ? i : 0;
 
-    for (int i = 0; i < IM_ARRAYSIZE(io.MouseDown); i++)
-        if (ImGui::IsMouseDown(i) && i + (i > 1 ? 2 : 1) != config.misc.menuKey)
-            key = i + (i > 1 ? 2 : 1);
+        for (int i = 0; i < IM_ARRAYSIZE(io.MouseDown); i++)
+            if (ImGui::IsMouseDown(i) && i + (i > 1 ? 2 : 1) != config.misc.menuKey)
+                key = i + (i > 1 ? 2 : 1);
+    }
 }
 
 void GUI::renderMenuBar() noexcept
@@ -1039,6 +1042,7 @@ void GUI::renderMiscWindow(bool contentOnly) noexcept
         Misc::fakeBan(true);
     ImGui::Checkbox("Fast plant", &config.misc.fastPlant);
     ImGuiCustom::colorPicker("Bomb timer", config.misc.bombTimer);
+    ImGui::Checkbox("Bomb Damage Indicator", &config.misc.bombDamage);
     ImGui::Checkbox("Quick reload", &config.misc.quickReload);
     ImGui::Checkbox("Prepare revolver", &config.misc.prepareRevolver);
     ImGui::SameLine();

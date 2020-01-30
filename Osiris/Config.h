@@ -221,7 +221,7 @@ public:
     } style;
 
     struct {
-        int menuKey{ 0x2D }; // VK_INSERT
+        int menuKey{ 0x24 }; // VK_INSERT
         bool antiAfkKick{ false };
         bool autoStrafe{ false };
         bool bunnyHop{ false };
@@ -260,6 +260,7 @@ public:
         std::string banText{ "Cheater has been permanently banned from official CS:GO servers." };
         bool fastPlant{ false };
         ColorToggle bombTimer{ 1.0f, 0.55f, 0.0f };
+        bool bombDamage{ false };
         bool quickReload{ false };
         bool prepareRevolver{ false };
         int prepareRevolverKey{ 0 };
