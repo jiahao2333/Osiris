@@ -3,13 +3,13 @@
 #include <cstddef>
 
 struct WeaponData {
-    std::byte pad1[4];
-    char *name;
-    std::byte pad1_[12];
+    std::byte pad[20];
     int maxClip;
-    std::byte pad2[180];
+    std::byte pad1[112];
+    char* name;
+    std::byte pad1_[60];
     int type;
-    std::byte pad2_[28];
+    std::byte pad2[32];
     bool fullAuto;
     std::byte pad3[3];
     int damage;

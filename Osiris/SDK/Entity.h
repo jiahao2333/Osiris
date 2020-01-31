@@ -176,7 +176,7 @@ public:
     {
         return callVirtualMethod<float>(this, 481);
     }
-    
+
     VarMap* getVarMap() noexcept
     {
         return reinterpret_cast<VarMap*>(this + 0x24);
